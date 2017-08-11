@@ -1,7 +1,7 @@
 ﻿open System
 open CardsSimulator
 open CardsSimulator.Deck
-open CardsSimulator.Poker
+open CardsSimulator.TexasHoldemPoker
 
 [<EntryPoint>]
 let main argv =

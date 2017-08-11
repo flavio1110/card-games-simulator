@@ -23,9 +23,7 @@ type Rank =
     | Three = 3
     | Two = 2
 
-type Card =
-  | Regular of Suit * Rank
-  | Joker
+type Card = Suit * Rank
 
 module Deck =
     let rand = Random()
@@ -43,19 +41,19 @@ module Deck =
         [|0..max|] |> Array.fold randomSwap arr
     let FullDeck = 
         [for suit in [Suit.Clubs; Suit.Diamonds; Suit.Hearts; Suit.Spades] do 
-            yield Card.Regular(suit, Rank.Two);
-            yield Card.Regular(suit, Rank.Three);
-            yield Card.Regular(suit, Rank.Four);
-            yield Card.Regular(suit, Rank.Five);
-            yield Card.Regular(suit, Rank.Six);
-            yield Card.Regular(suit, Rank.Seven);
-            yield Card.Regular(suit, Rank.Eight);
-            yield Card.Regular(suit, Rank.Nine);
-            yield Card.Regular(suit, Rank.Ten);
-            yield Card.Regular(suit, Rank.Jack);
-            yield Card.Regular(suit, Rank.Queen);
-            yield Card.Regular(suit, Rank.King);
-            yield Card.Regular(suit, Rank.Ace);
+            yield (suit, Rank.Two);
+            yield (suit, Rank.Three);
+            yield (suit, Rank.Four);
+            yield (suit, Rank.Five);
+            yield (suit, Rank.Six);
+            yield (suit, Rank.Seven);
+            yield (suit, Rank.Eight);
+            yield (suit, Rank.Nine);
+            yield (suit, Rank.Ten);
+            yield (suit, Rank.Jack);
+            yield (suit, Rank.Queen);
+            yield (suit, Rank.King);
+            yield (suit, Rank.Ace);
         ]
 
     let mutable ShuffledDeck = FullDeck |> List.toArray |> Shuffle
@@ -65,7 +63,5 @@ module Deck =
         ShuffledDeck <- ShuffledDeck.[1..]
         nextCad
 
-    let DescribeCard card =
-        match card with        
-        | Regular (suit, rank) -> rank.ToString() + suit.ToString()
-        | Joker -> "Joker"
+    let DescribeCard suit rank =
+        rank.ToString() + suit.ToString()
