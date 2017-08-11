@@ -8,15 +8,23 @@ type Suit =
     | Hearts 
     | Spades
 
-type Face = 
-    | Jack 
-    | Queen 
-    | King 
-    | Ace
+type Rank = 
+    | Ace = 14 
+    | King  = 13
+    | Queen = 12 
+    | Jack = 11 
+    | Ten = 10
+    | Nine = 9
+    | Eight = 8
+    | Seven =7
+    | Six = 6
+    | Five = 5
+    | Four = 4
+    | Three = 3
+    | Two = 2
 
-type Card =   
-  | ValueCard of Suit * int
-  | FaceCard of Suit * Face
+type Card =
+  | Regular of Suit * Rank
   | Joker
 
 module Deck =
@@ -35,19 +43,19 @@ module Deck =
         [|0..max|] |> Array.fold randomSwap arr
     let FullDeck = 
         [for suit in [Suit.Clubs; Suit.Diamonds; Suit.Hearts; Suit.Spades] do 
-            yield Card.ValueCard(suit, 2);
-            yield Card.ValueCard(suit, 3);
-            yield Card.ValueCard(suit, 4);
-            yield Card.ValueCard(suit, 5);
-            yield Card.ValueCard(suit, 6);
-            yield Card.ValueCard(suit, 7);
-            yield Card.ValueCard(suit, 8);
-            yield Card.ValueCard(suit, 9);
-            yield Card.ValueCard(suit, 10);
-            yield Card.FaceCard(suit, Face.Jack);
-            yield Card.FaceCard(suit, Face.Queen);
-            yield Card.FaceCard(suit, Face.King);
-            yield Card.FaceCard(suit, Face.Ace);
+            yield Card.Regular(suit, Rank.Two);
+            yield Card.Regular(suit, Rank.Three);
+            yield Card.Regular(suit, Rank.Four);
+            yield Card.Regular(suit, Rank.Five);
+            yield Card.Regular(suit, Rank.Six);
+            yield Card.Regular(suit, Rank.Seven);
+            yield Card.Regular(suit, Rank.Eight);
+            yield Card.Regular(suit, Rank.Nine);
+            yield Card.Regular(suit, Rank.Ten);
+            yield Card.Regular(suit, Rank.Jack);
+            yield Card.Regular(suit, Rank.Queen);
+            yield Card.Regular(suit, Rank.King);
+            yield Card.Regular(suit, Rank.Ace);
         ]
 
     let mutable ShuffledDeck = FullDeck |> List.toArray |> Shuffle
@@ -59,6 +67,5 @@ module Deck =
 
     let DescribeCard card =
         match card with        
-        | ValueCard (suit, value) -> value.ToString() + suit.ToString()
-        | FaceCard (suit, face) -> face.ToString() + suit.ToString()
+        | Regular (suit, rank) -> rank.ToString() + suit.ToString()
         | Joker -> "Joker"
