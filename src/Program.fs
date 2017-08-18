@@ -6,11 +6,11 @@ open CardsSimulator.TexasHoldemPoker
 [<EntryPoint>]
 let main argv =
     let cards = 
-        [| Suit.Clubs, Rank.Ten
-           Suit.Clubs, Rank.Jack
-           Suit.Clubs, Rank.Queen 
-           Suit.Clubs, Rank.King 
-           Suit.Clubs, Rank.Ace |]
+        [| Suit.Clubs, Rank.Six
+           Suit.Clubs, Rank.Two
+           Suit.Diamonds, Rank.Three
+           Suit.Clubs, Rank.Four 
+           Suit.Clubs, Rank.Five|]
                
     let actual = isSequence cards
 

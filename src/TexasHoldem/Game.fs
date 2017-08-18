@@ -59,6 +59,7 @@ module TexasHoldemPoker =
     let isSequence (cards : Card[]) =
         let ordernedCards = Array.sortBy(fun (suit, rank) -> rank) cards
         let _, rankFst = ordernedCards.[0]
+        let _, rankLst = ordernedCards.[4]
 
         let cardIsSequenceFromLastOne i =
             let isSeq = 
@@ -69,17 +70,25 @@ module TexasHoldemPoker =
                     let _, currRank = ordernedCards.[i]
                     let expectedRank = enum<Rank>((int prevRank) + 1)
                     expectedRank = currRank
-            isSeq                
+            isSeq
+        
+        let isInSequence cards =
+            cards 
+            |> Array.mapi (fun i card -> cardIsSequenceFromLastOne i)
+            |> Array.reduce (fun acc isSeq -> isSeq)
 
         match rankFst with
         | Rank.Ace -> false
         | Rank.King -> false
         | Rank.Queen -> false
         | Rank.Jack -> false
+        | Rank.Two ->
+            if rankLst = Rank.Ace then
+                isInSequence (ordernedCards |> Array.take 4)
+            else
+                isInSequence ordernedCards
         | _ -> 
-            ordernedCards 
-            |> Array.mapi (fun i card -> cardIsSequenceFromLastOne i)
-            |> Array.reduce (fun acc isSeq -> isSeq)
+            isInSequence ordernedCards
 
     let getHandValue hand = 
         let ordernedCards = Array.sortBy(fun (suit, rank) -> rank) hand.Cards
