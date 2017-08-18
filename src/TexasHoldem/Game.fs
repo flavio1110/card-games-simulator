@@ -1,5 +1,5 @@
 namespace CardsSimulator
-
+open System;
 open CardsSimulator.Deck
 open System.Linq
 
@@ -56,10 +56,60 @@ module TexasHoldemPoker =
         Players = [| player1; player2 |]
     }
 
+    let isSequence (cards : Card[]) =
+        let ordernedCards = Array.sortBy(fun (suit, rank) -> rank) cards
+        let _, rankFst = ordernedCards.[0]
+
+        let cardIsSequenceFromLastOne i =
+            let isSeq = 
+                if i = 0 then
+                    true
+                else
+                    let _, prevRank = ordernedCards.[i - 1]
+                    let _, currRank = ordernedCards.[i]
+                    let expectedRank = enum<Rank>((int prevRank) + 1)
+                    expectedRank = currRank
+            isSeq                
+
+        match rankFst with
+        | Rank.Ace -> false
+        | Rank.King -> false
+        | Rank.Queen -> false
+        | Rank.Jack -> false
+        | _ -> 
+            ordernedCards 
+            |> Array.mapi (fun i card -> cardIsSequenceFromLastOne i)
+            |> Array.reduce (fun acc isSeq -> isSeq)
+
     let getHandValue hand = 
-        let sameSuit suit prevSuit = suit = prevSuit 
-        let suit, rank = hand.Cards.[0]
-        // TODO: Figure it out how it works :) Fold is the solution?
-        //let sumList = Array.fold sameSuit hand.Cards
-        HandValue.RoyalFlush
+        let ordernedCards = Array.sortBy(fun (suit, rank) -> rank) hand.Cards
+        let suits = Array.groupBy(fun (suit, rank) -> suit) hand.Cards
+        let ranks = Array.groupBy(fun (suit, rank) -> rank) hand.Cards
+
+        let suitFst, rankFst = ordernedCards.[0]
+        let suitLst, rankLst = ordernedCards.[4]
+
+        let haveSuits number = suits.Length = number
+        let haveRanks number = ranks.Length = number        
+        let sequenceStartsWithTen = rankFst = Rank.Ten
+        let isStraight = isSequence ordernedCards
+
+        let isFlush = haveSuits 1
+        let isFourOfAKind = haveRanks 2
+        let isRoyalFlush = isFlush && isStraight && sequenceStartsWithTen
+        let isStraightFlush = isFlush && isStraight
+        
+        let hand =
+            if isRoyalFlush then
+                HandValue.RoyalFlush
+            elif isStraightFlush then
+                HandValue.StraightFlush
+            elif isFourOfAKind then
+                HandValue.FourOfAkind
+            elif isFlush then
+                HandValue.Flush
+            else
+                HandValue.HighCard
+
+        hand
     
