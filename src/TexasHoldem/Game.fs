@@ -107,38 +107,20 @@ module TexasHoldemPoker =
         let groupedAs (differentRanks, occurrences) = 
             haveRanks differentRanks && topCardWithSameRank = occurrences
 
-        //TODO: The way that I'm creating these expressions is messing up the ifs bellow. 
         let isStraight = isSequence ordernedCards 
-        let isFlush = hasOnlyOneSuit ordernedCards        
-        let isRoyalFlush = isFlush && isStraight && startsWithTen
-        let isStraightFlush = isFlush && isStraight
-        let isFourOfAKind = groupedAs (2, 4)
-        let isFullHouse = groupedAs (2, 3)
-        let isThreeOfAKind = groupedAs (3, 3)
-        let isTwoPairs = groupedAs (3, 2)
-        let isPair = groupedAs (4, 2)
+        let isFlush = hasOnlyOneSuit ordernedCards      
 
-        //TODO: Figure out a way to improve it. How transorm it in match with?
-        let handValue =
-            if isRoyalFlush then
-                HandValue.RoyalFlush
-            elif isStraightFlush then
-                HandValue.StraightFlush
-            elif isFourOfAKind then
-                HandValue.FourOfAkind
-            elif isFullHouse then
-               HandValue.FullHouse
-            elif isFlush then
-                HandValue.Flush
-            elif isStraight then
-                HandValue.Straight
-            elif isThreeOfAKind then
-                HandValue.ThreeOfAKind
-            elif isTwoPairs then
-                HandValue.TwoPairs
-            elif isPair then
-                HandValue.Pair
-            else
-                HandValue.HighCard
-
-        handValue
+        let hand = 
+            match ordernedCards with
+            | h when isFlush && isStraight && startsWithTen -> HandValue.RoyalFlush
+            | h when isFlush && isStraight -> HandValue.StraightFlush
+            | h when groupedAs (2, 4) -> HandValue.FourOfAkind
+            | h when groupedAs (2, 3) -> HandValue.FullHouse
+            | h when isFlush -> HandValue.Flush
+            | h when isStraight  -> HandValue.Straight
+            | h when groupedAs (3, 3) -> HandValue.ThreeOfAKind
+            | h when groupedAs (3, 2) -> HandValue.TwoPairs
+            | h when groupedAs (4, 2) -> HandValue.Pair
+            | _ -> HandValue.HighCard
+        
+        hand    
