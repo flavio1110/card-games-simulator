@@ -1,0 +1,10 @@
+version: 2.0.{build}
+image: Visual Studio 2017 Preview
+
+before_build:
+- dotnet --info
+- dotnet restore -v Minimal --no-cache
+build_script:
+- dotnet build --configuration Release --version-suffix %APPVEYOR_BUILD_NUMBER%
+test_script:
+- dotnet test tests/CardGamesSimulatorTests.fsproj --configuration Release --no-build
