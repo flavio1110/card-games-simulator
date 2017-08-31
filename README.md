@@ -1,3 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/hmpe5waw8qme8o79?svg=true)](https://ci.appveyor.com/project/flavio1110/card-games-simulator)
+
+
 # card-games-simulator
 Simulating card games using F#
 
