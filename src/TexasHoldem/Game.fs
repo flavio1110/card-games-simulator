@@ -124,3 +124,13 @@ module TexasHoldemPoker =
             | _ -> HandValue.HighCard
         
         hand    
+
+    let getFiveCardsCombinations (cards : Card[]) =
+        let rec comb n l = 
+            match n, l with
+            | 0, _ -> [[]]
+            | _, [] -> []
+            | k, (x::xs) -> List.map ((@) [x]) (comb (k-1) xs) @ comb k xs
+        
+        comb 5 [1..cards.Length]
+        |> List.map(fun list -> list |> List.map(fun i -> cards.[i - 1]))

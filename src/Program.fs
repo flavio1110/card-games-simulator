@@ -12,8 +12,14 @@ let main argv =
            Suit.Clubs, Rank.Four 
            Suit.Clubs, Rank.Five|]
                
-    let actual = isSequence cards
+    let actual = getFiveCardsCombinations cards
 
-    Console.WriteLine actual
+    Console.WriteLine actual.Length
+
+    for list in actual do
+        for card in list do
+            Console.Write(card)
+        Console.WriteLine("")    
+
 
     0 // return an integer exit code
