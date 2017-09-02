@@ -86,9 +86,23 @@ let ``When have three cards of the same rank and other two cards of the other ra
                Suit.Spades, Rank.Eight 
                Suit.Hearts, Rank.Eight|]
     }
+    
     let actual = getHandValue hand
 
     Assert.Equal(HandValue.FullHouse, actual)
+
+[<Fact>]
+let ``When have a set of cards with three cards of the same rank and other two cards of the other rank should be FullHouse `` () =
+    let hand = {
+        Cards = 
+            [| Suit.Clubs, Rank.King
+               Suit.Clubs, Rank.Eight
+               Suit.Spades, Rank.Eight 
+               Suit.Hearts, Rank.Eight|]
+    }
+    let actual = getHandValue hand
+
+    Assert.Equal(HandValue.ThreeOfAKind, actual)
 
 [<Fact>]
 let ``When have three cards of the same rank should be ThreeOfAKind `` () =
@@ -97,6 +111,31 @@ let ``When have three cards of the same rank should be ThreeOfAKind `` () =
             [| Suit.Clubs, Rank.King
                Suit.Diamonds, Rank.Nine
                Suit.Clubs, Rank.Eight
+               Suit.Spades, Rank.Eight 
+               Suit.Hearts, Rank.Eight|]
+    }
+    let actual = getHandValue hand
+
+    Assert.Equal(HandValue.ThreeOfAKind, actual)
+
+[<Fact>]
+let ``When have set of four cards with three cards of the same rank should be ThreeOfAKind `` () =
+    let hand = {
+        Cards = 
+            [| Suit.Diamonds, Rank.Nine
+               Suit.Clubs, Rank.Eight
+               Suit.Spades, Rank.Eight 
+               Suit.Hearts, Rank.Eight|]
+    }
+    let actual = getHandValue hand
+
+    Assert.Equal(HandValue.ThreeOfAKind, actual)
+
+[<Fact>]
+let ``When have set of three cards with all cards of the same rank should be ThreeOfAKind `` () =
+    let hand = {
+        Cards = 
+            [| Suit.Clubs, Rank.Eight
                Suit.Spades, Rank.Eight 
                Suit.Hearts, Rank.Eight|]
     }
@@ -132,6 +171,18 @@ let ``When have one pair should be Pair `` () =
 
     Assert.Equal(HandValue.Pair, actual)
 
+
+[<Fact>]
+let ``When have a set of three cards with one pair should be Pair `` () =
+    let hand = {
+        Cards = 
+            [| Suit.Clubs, Rank.Nine
+               Suit.Spades, Rank.Eight 
+               Suit.Hearts, Rank.Eight|]
+    }
+    let actual = getHandValue hand
+
+    Assert.Equal(HandValue.Pair, actual)
 
 [<Fact>]
 let ``When don't have any other combination should be HighCard `` () =

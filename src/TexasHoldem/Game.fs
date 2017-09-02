@@ -88,41 +88,44 @@ module TexasHoldemPoker =
             hand.Cards
             |> Array.sortBy(fun (suit, rank) -> rank) 
         
+        let groupsOfRanks = 
+            ordernedCards
+            |> Array.groupBy(fun (suit, rank) -> rank) 
+            |> Array.sortByDescending(fun (key, values) -> values.Length)
+            |> Array.map(fun (key, values) -> values.Length)
+
         let hasOnlyOneSuit cards = 
             cards 
             |> Array.distinctBy(fun (suit, rank) -> suit)
             |> Array.length = 1
 
-        let ranksGroup = 
-            ordernedCards
-            |> Array.groupBy(fun (suit, rank) -> rank) 
-            |> Array.sortByDescending(fun (key, values) -> values.Length)
+        let startsWithTen (cards : Card[]) =
+            let _, rankFst = cards.[0]
+            rankFst = Rank.Ten
 
-        let _, rankFst = ordernedCards.[0]
+        let isGroupedAs (spec: List<int>) = 
+            spec
+            |> List.mapi(fun i num -> groupsOfRanks.Length > i && groupsOfRanks.[i] = num)
+            |> List.reduce (fun acc cur -> acc && cur = acc)
 
-        let key, sameRank = ranksGroup.[0]
-        let haveRanks number = ranksGroup.Length = number        
-        let startsWithTen = rankFst = Rank.Ten                
-        let topCardWithSameRank = sameRank.Length
-        let groupedAs (differentRanks, occurrences) = 
-            haveRanks differentRanks && topCardWithSameRank = occurrences
+        let isStraight (cards : Card[]) = 
+            cards.Length = 5 && isSequence cards
 
-        let isStraight = isSequence ordernedCards 
-        let isFlush = hasOnlyOneSuit ordernedCards      
-
+        let isFlush (cards : Card[]) = 
+            cards.Length = 5 && hasOnlyOneSuit cards
+        
         let hand = 
             match ordernedCards with
-            | h when isFlush && isStraight && startsWithTen -> HandValue.RoyalFlush
-            | h when isFlush && isStraight -> HandValue.StraightFlush
-            | h when groupedAs (2, 4) -> HandValue.FourOfAkind
-            | h when groupedAs (2, 3) -> HandValue.FullHouse
-            | h when isFlush -> HandValue.Flush
-            | h when isStraight  -> HandValue.Straight
-            | h when groupedAs (3, 3) -> HandValue.ThreeOfAKind
-            | h when groupedAs (3, 2) -> HandValue.TwoPairs
-            | h when groupedAs (4, 2) -> HandValue.Pair
+            | h when isFlush h && isStraight h && startsWithTen h -> HandValue.RoyalFlush
+            | h when isFlush h && isStraight h -> HandValue.StraightFlush
+            | h when isGroupedAs [4] -> HandValue.FourOfAkind
+            | h when isGroupedAs [3;2] -> HandValue.FullHouse
+            | h when isFlush h -> HandValue.Flush
+            | h when isStraight h -> HandValue.Straight
+            | h when isGroupedAs [3] -> HandValue.ThreeOfAKind
+            | h when isGroupedAs [2;2] -> HandValue.TwoPairs
+            | h when isGroupedAs [2] -> HandValue.Pair
             | _ -> HandValue.HighCard
-        
         hand    
 
     let getFiveCardsCombinations (cards : Card[]) =
