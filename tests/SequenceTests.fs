@@ -57,3 +57,16 @@ let ``Five cards starting from Ace to five should be sequence`` () =
     let actual = isSequence cards
 
     Assert.True actual
+
+[<Fact>]
+let ``Five cards with a three and on card in sequence should not be a sequence`` () =
+    let cards = 
+        [| Suit.Hearts, Rank.Six
+           Suit.Clubs, Rank.Eight
+           Suit.Spades, Rank.Eight
+           Suit.Hearts, Rank.Eight 
+           Suit.Diamonds, Rank.Nine|]
+               
+    let actual = isSequence cards
+
+    Assert.False actual

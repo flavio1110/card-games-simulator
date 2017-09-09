@@ -197,3 +197,18 @@ let ``When don't have any other combination should be HighCard `` () =
     let actual = getHandValue hand
 
     Assert.Equal(HandValue.HighCard, actual)
+
+[<Fact>]
+let ``When have all possible cards (hands + flop + turn + river) should return the highest hand `` () =
+    let cards = 
+        [| Suit.Clubs, Rank.King
+           Suit.Clubs, Rank.Jack
+           Suit.Diamonds, Rank.Nine
+           Suit.Hearts, Rank.Six
+           Suit.Clubs, Rank.Eight
+           Suit.Spades, Rank.Eight 
+           Suit.Hearts, Rank.Eight|]
+    
+    let actual = getHightestHand cards
+
+    Assert.Equal(HandValue.ThreeOfAKind, actual)

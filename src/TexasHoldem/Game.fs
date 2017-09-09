@@ -73,7 +73,7 @@ module TexasHoldemPoker =
         let isInSequence cards =
             cards 
             |> Array.mapi (fun i card -> cardIsSequenceFromLastOne i)
-            |> Array.reduce (fun acc isSeq -> isSeq)
+            |> Array.reduce (fun acc isSeq -> isSeq && isSeq = acc)
 
         match rankFst with
         | Rank.Ace | Rank.King | Rank.Queen | Rank.Jack -> false
@@ -137,3 +137,15 @@ module TexasHoldemPoker =
         
         comb 5 [1..cards.Length]
         |> List.map(fun list -> list |> List.map(fun i -> cards.[i - 1]))
+
+    let getHightestHand (cards : Card[]) =
+        let combinations = getFiveCardsCombinations cards
+        let inline (|?) (a: 'a option) b = if a.IsSome then a.Value else b 
+
+        let highestHand = 
+            combinations
+            |> List.map(fun cards -> getHandValue { Cards = cards.ToArray() })            
+            |> List.sortByDescending(id)
+            |> List.first
+
+        highestHand |? HandValue.HighCard
